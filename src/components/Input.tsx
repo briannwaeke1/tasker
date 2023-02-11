@@ -1,16 +1,27 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
-const InputContainer = () => {
-  const [newTask, setNewTask] = useState(""); 
+const InputContainer = ({
+  handleSubmit,
+}: {
+  handleSubmit: (e: FormEvent<HTMLFormElement>, value: string) => void;
+}) => {
+  const [newTaskName, setNewTaskName] = useState("");
   return (
-    <form action="" className="flex flex-col gap-4">
+    <form
+      action=""
+      className="flex flex-col gap-4"
+      onSubmit={(e) => {
+        handleSubmit(e, newTaskName);
+        setNewTaskName("");
+      }}
+    >
       <div className="flex flex-col">
         <label className="text-white">Enter your next task:</label>
         <input
           className="p-1 rounded-sm"
           type="text"
-          value={newTask} 
-          onChange={(e) => setNewTask(e.target.value)} 
+          value={newTaskName}
+          onChange={(e) => setNewTaskName(e.target.value)}
         />
       </div>
       <button

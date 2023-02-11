@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import Container from "./components/Container";
 import Input from "./components/Input";
 import Summary from "./components/Summary/Summary";
@@ -24,8 +24,44 @@ const initialTasks = [
   },
 ];
 
+
 function App() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
+
+
+// handleSubmit returns a new array with the old tasks plus the new one.
+  const handleSubmit = (e: FormEvent<HTMLFormElement>, value: string) => {
+    e.preventDefault();
+    const newTask = {
+      name: value,
+      done: false,
+      id: uuidv4(),
+    };
+    setTasks((tasks) => [...tasks, newTask]);
+  };
+
+
+// toggleDoneTask returns a new array with the opposite done property, for the specified id. 
+  const toggleDoneTask = (id: string, done: boolean) => {
+    setTasks((tasks) =>
+      tasks.map((t) => {
+        if (t.id === id) {
+          t.done = done;
+        }
+        return t;
+      })
+    );
+  };
+
+
+// handleDeleteTask returns a new array without the task with the specified id.
+  const handleDeleteTask = (id: string) => {
+    setTasks((tasks) => tasks.filter((t) => t.id !== id));
+  };
+
+
+
+
   return (
     <div className="flex justify-center m-5">
       <div className="flex flex-col items-center">
@@ -34,10 +70,14 @@ function App() {
             <Summary tasks={tasks} />
           </Container>
           <Container>
-            <Input />
+          <Input handleSubmit={handleSubmit} />
           </Container>
           <Container title={"Tasks"}>
-            <Tasks tasks={tasks} />
+          <Tasks
+              tasks={tasks}
+              toggleDone={toggleDoneTask}
+              handleDelete={handleDeleteTask}
+            />
           </Container>
         </div>
       </div>
